@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime & Movie Decision Maker</title>
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .wheel-rotate {
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.1, 1);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="max-w-md w-full bg-slate-800 p-6 rounded-2xl shadow-2xl border border-slate-700 text-center">
+        <h1 class="text-3xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+            What to Watch?
+        </h1>
+        <p class="text-gray-400 text-sm mb-6">Enter your options and spin the wheel!</p>
+
+        <!-- Input Section -->
+        <div class="flex gap-2 mb-6">
+            <input id="optionInput" type="text" placeholder="e.g., Naruto, Inception" 
+                   class="flex-1 px-4 py-2 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500 text-sm">
+            <button id="addBtn" class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold px-4 py-2 rounded-lg text-sm transition-all">
+                Add
+            </button>
+        </div>
+
+        <!-- Options List Badge Display -->
+        <div id="optionsList" class="flex flex-wrap gap-2 mb-6 justify-center min-h-[32px]"></div>
+
+        <!-- Wheel Container Visual Area -->
+        <div class="relative w-64 h-64 mx-auto mb-6 flex items-center justify-center">
+            <div class="absolute -top-2 z-10 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[25px] border-t-red-500"></div>
+            <div id="wheel" class="w-full h-full rounded-full border-4 border-slate-600 bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-xl font-bold shadow-inner wheel-rotate">
+                <span id="wheelText" class="p-4 text-center select-none">Spin Me!</span>
+            </div>
+        </div>
+
+        <!-- Action Button -->
+        <button id="spinBtn" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform active:scale-95 transition-all tracking-wide">
+            SPIN THE WHEEL 🎡
+        </button>
+
+        <!-- Result Alert Box -->
+        <div id="resultBox" class="mt-6 p-3 bg-slate-700/50 rounded-lg border border-slate-600 hidden animate-bounce">
+            <p class="text-gray-300 text-xs uppercase tracking-wider">Your selection:</p>
+            <h2 id="resultText" class="text-xl font-bold text-cyan-400 mt-1"></h2>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        const optionInput = document.getElementById('optionInput');
+        const addBtn = document.getElementById('addBtn');
+        const optionsList = document.getElementById('optionsList');
+        const wheel = document.getElementById('wheel');
+        const wheelText = document.getElementById('wheelText');
+        const spinBtn = document.getElementById('spinBtn');
+        const resultBox = document.getElementById('resultBox');
+        const resultText = document.getElementById('resultText');
+
+        let options = [];
+        let currentRotation = 0;
+
+        function addOption() {
+            const value = optionInput.value.trim();
+            if (value === "") {
+                alert("Pehle kuch type toh karein!");
+                return;
+            }
+            options.push(value);
+            optionInput.value = ""; 
+            renderOptions(); 
+        }
+
+        function renderOptions() {
+            optionsList.innerHTML = ""; 
+            options.forEach((option, index) => {
+                const badge = document.createElement('span');
+                badge.className = "bg-slate-700 text-cyan-300 text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-2 border border-slate-600";
+                badge.innerHTML = `
+                    ${option}
+                    <button onclick="removeOption(${index})" class="text-red-400 hover:text-red-500 font-bold ml-1">✕</button>
+                `;
+                optionsList.appendChild(badge);
+            });
+        }
+
+        window.removeOption = function(index) {
+            options.splice(index, 1);
+            renderOptions();
+        }
+
+        function spinWheel() {
+            if (options.length < 2) {
+                alert("Wheel ghumane ke liye kam se kam 2 options zaroor dalein!");
+                return;
+            }
+            spinBtn.disabled = true;
+            resultBox.classList.add('hidden'); 
+            wheelText.innerText = "Selecting...";
+
+            const randomExtraDegrees = Math.floor(Math.random() * 360);
+            const totalSpinDegrees = 1800 + randomExtraDegrees; 
+            currentRotation += totalSpinDegrees;
+
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+            const randomIndex = Math.floor(Math.random() * options.length);
+            const winner = options[randomIndex];
+
+            setTimeout(() => {
+                wheelText.innerText = "🎡";
+                resultText.innerText = winner;
+                resultBox.classList.remove('hidden'); 
+                spinBtn.disabled = false; 
+            }, 4000);
+        }
+
+        addBtn.addEventListener('click', addOption);
+        optionInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addOption();
+        });
+        spinBtn.addEventListener('click', spinWheel);
+    </script>
+</body>
+</html>
