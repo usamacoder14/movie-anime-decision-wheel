@@ -13,6 +13,11 @@
     </style>
 </head>
 <body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
+     <!-- DYNAMIC FLOATING NOTIFICATION TOP-CENTER -->
+    <div id="vaultNotification" class="fixed top-6 left-1/2 -translate-x-1/2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 backdrop-blur-md font-bold px-5 py-3 rounded-xl text-xs Lowercasetracking-wider shadow-[0_0_30px_rgba(16,185,129,0.15)] transition-all duration-300 transform -translate-y-10 opacity-0 pointer-events-none z-50 flex items-center gap-2">
+    <span id="notificationIcon">⚡</span> 
+    <span id="notificationMessage">Password generated successfully!</span>
+    </div>
 
     <div class="max-w-md w-full bg-slate-800 p-6 rounded-2xl shadow-2xl border border-slate-700 text-center">
         <h1 class="text-3xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
@@ -126,6 +131,31 @@
             if (e.key === 'Enter') addOption();
         });
         spinBtn.addEventListener('click', spinWheel);
+
+        
+			    // 1. GLOBAL NOTIFICATION TRIGGER MANAGER (Top-Center Logic)
+        let notificationTimeout;
+        function showVaultNotification(icon, message) {
+            const toast = document.getElementById('vaultNotification');
+            const toastIcon = document.getElementById('notificationIcon');
+            const toastMsg = document.getElementById('notificationMessage');
+
+            if (!toast || !toastIcon || !toastMsg) return;
+
+            clearTimeout(notificationTimeout);
+
+            toastIcon.textContent = icon;
+            toastMsg.textContent = message;
+
+            toast.classList.remove('-translate-y-10', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            notificationTimeout = setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('-translate-y-10', 'opacity-0', 'pointer-events-none');
+            }, 2500);
+        }
+        
     </script>
 </body>
 </html>
