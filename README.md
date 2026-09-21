@@ -6,7 +6,7 @@ Users can add their own choices, manage them dynamically, and spin the wheel to 
 
 ## 🌐 Live Demo
 
-👉 **[View Live Demo](https://uh-digital.github.io/movie-anime-decision-wheel/)**
+👉 **[View Live Demo](https://usamacoder14.github.io/movie-anime-decision-wheel/)**
 
 ## 📸 Preview
 
